@@ -53,11 +53,11 @@ class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presen
     }
     
     override fun onArtistClicked(artist: Artist) {
-        // TODO: Navigate to artist detail
+        getView()?.navigateToArtistDetail(artist)
     }
     
     override fun onSongClicked(song: Song) {
-        // TODO: Play song
+        getView()?.navigateToSongDetail(song)
     }
     
     override fun loadWeatherInfo() {

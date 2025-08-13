@@ -5,13 +5,13 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/bg_song_item"
-    android:layout_marginBottom="16dp">
+    android:layout_marginBottom="@dimen/dp_16">
 
     <!-- Song Image -->
     <ImageView
         android:id="@+id/ivSong"
-        android:layout_width="76dp"
-        android:layout_height="76dp"
+        android:layout_width="@dimen/dp_76"
+        android:layout_height="@dimen/dp_76"
         android:background="@drawable/bg_image_placeholder"
         android:scaleType="centerCrop"
         android:src="@drawable/iv_song"
@@ -23,8 +23,8 @@
     <LinearLayout
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginVertical="16dp"
+        android:layout_marginStart="@dimen/dp_24"
+        android:layout_marginVertical="@dimen/dp_16"
         android:orientation="vertical"
         app:layout_constraintBottom_toBottomOf="@+id/ivSong"
         app:layout_constraintEnd_toEndOf="parent"
@@ -36,7 +36,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp_18"
             android:textStyle="bold"
             tools:text="Ca khúc 1" />
 
@@ -44,9 +44,9 @@
             android:id="@+id/tvSongArtist"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="4dp"
+            android:layout_marginTop="@dimen/dp_4"
             android:textColor="@color/text_secondary"
-            android:textSize="18sp"
+            android:textSize="@dimen/sp_18"
             tools:text="Thông tin chi tiết ca khúc 1" />
 
     </LinearLayout>

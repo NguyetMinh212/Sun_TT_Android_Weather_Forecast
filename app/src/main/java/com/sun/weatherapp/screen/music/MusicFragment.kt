@@ -30,10 +30,10 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
 
     override fun initializePresenter() {
         presenter = MusicPresenter()
+        presenter?.attachView(this)
     }
 
     override fun setupViews() {
-        presenter?.attachView(this)
         setupRecyclerViews()
         setupTabs()
         isInitialized = true
@@ -197,5 +197,15 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
 
     override fun showError(message: String) {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateToArtistDetail(artist: Artist) {
+        // Implement navigation to artist detail screen
+        Toast.makeText(requireContext(), "Navigate to ${artist.name} detail", Toast.LENGTH_SHORT).show()
+    }
+
+    override fun navigateToSongDetail(song: Song) {
+        // Implement navigation to song detail screen
+        Toast.makeText(requireContext(), "Navigate to ${song.title} detail", Toast.LENGTH_SHORT).show()
     }
 }

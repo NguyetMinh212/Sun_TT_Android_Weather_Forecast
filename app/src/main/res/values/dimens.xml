@@ -24,24 +24,41 @@
     
     <!-- Specific dimensions for layouts -->
     <dimen name="dp_0">0dp</dimen>
+    <dimen name="dp_1">1dp</dimen>
+    <dimen name="dp_2">2dp</dimen>
+    <dimen name="dp_4">4dp</dimen>
     <dimen name="dp_6">6dp</dimen>
+    <dimen name="dp_8">8dp</dimen>
+    <dimen name="dp_10">10dp</dimen>
     <dimen name="dp_12">12dp</dimen>
+    <dimen name="dp_16">16dp</dimen>
+    <dimen name="dp_18">18dp</dimen>
     <dimen name="dp_20">20dp</dimen>
+    <dimen name="dp_22">22dp</dimen>
     <dimen name="dp_24">24dp</dimen>
     <dimen name="dp_28">28dp</dimen>
+    <dimen name="dp_32">32dp</dimen>
+    <dimen name="dp_40">40dp</dimen>
+    <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_76">76dp</dimen>
     <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_120">120dp</dimen>
     <dimen name="dp_150">150dp</dimen>
     <dimen name="dp_200">200dp</dimen>
     <dimen name="dp_400">400dp</dimen>
-    <dimen name="dp_40">40dp</dimen>
-    <dimen name="dp_1">1dp</dimen>
     
-    <!-- Text sizes -->
+    <!-- Text sizes specific -->
+    <dimen name="sp_12">12sp</dimen>
     <dimen name="sp_14">14sp</dimen>
     <dimen name="sp_16">16sp</dimen>
+    <dimen name="sp_18">18sp</dimen>
+    <dimen name="sp_20">20sp</dimen>
+    <dimen name="sp_22">22sp</dimen>
     <dimen name="sp_24">24sp</dimen>
+    <dimen name="sp_32">32sp</dimen>
+    <dimen name="sp_48">48sp</dimen>
+    <dimen name="sp_56">56sp</dimen>
     <dimen name="sp_74">74sp</dimen>
 
     <dimen name="af_util_common_zero">0dp</dimen>
@@ -61,10 +78,6 @@
     <dimen name="af_util_margin_padding_larger">40dp</dimen>
     <dimen name="af_util_margin_padding_huge">48dp</dimen>
     <dimen name="af_util_margin_padding_ultra">64dp</dimen>
-    <dimen name="dp_4">4dp</dimen>
-    <dimen name="dp_8">8dp</dimen>
-    <dimen name="dp_16">16dp</dimen>
-    <dimen name="dp_32">32dp</dimen>
 
     <dimen name="af_util_radius_extra">20dp</dimen>
 
@@ -83,8 +96,5 @@
     <dimen name="af_util_header_height">56dp</dimen>
     <dimen name="af_util_header_height_small">48dp</dimen>
     <dimen name="af_util_footer_height">72dp</dimen>
-    <dimen name="sp_12">12sp</dimen>
-    <dimen name="sp_32">32sp</dimen>
-    <dimen name="sp_48">48sp</dimen>
 
 </resources>

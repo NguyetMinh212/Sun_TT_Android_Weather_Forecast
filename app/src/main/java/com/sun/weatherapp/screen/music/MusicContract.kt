@@ -12,6 +12,8 @@ interface MusicContract : BaseContract<MusicContract.View, MusicContract.Present
         fun showArtists(artists: List<Artist>)
         fun updateSelectedTab(tabType: MusicTabType)
         fun showWeatherInfo(location: String, temperature: String)
+        fun navigateToArtistDetail(artist: Artist)
+        fun navigateToSongDetail(song: Song)
     }
     
     interface Presenter : BaseContract.Presenter<View> {
