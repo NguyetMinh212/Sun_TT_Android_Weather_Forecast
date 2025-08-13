@@ -69,4 +69,19 @@
 
     <color name="purple">#8A20D5</color>
     <color name="purple_light">#F6EDFF</color>
+
+    <!-- Music App Colors -->
+    <color name="music_background">#F5F5F7</color>
+    <color name="weather_header_background">#E1D3FA</color>
+
+    <!-- Tab Colors -->
+    <color name="tab_selected_background">#E0B6FF</color>
+    <color name="tab_unselected_background">#FFFFFF</color>
+
+    <!-- Item Background Colors -->
+    <color name="item_background">#EBDEFF</color>
+    <color name="item_background_pressed">#E4D6FA</color>
+
+    <!-- Image Placeholder -->
+    <color name="image_placeholder">#E5E5EA</color>
 </resources>

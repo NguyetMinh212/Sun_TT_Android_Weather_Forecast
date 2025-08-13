@@ -66,4 +66,10 @@
     <string name="confirm_password">Xác nhận mật khẩu</string>
     <string name="remember_password">Nhớ mật khẩu</string>
     <string name="back">Quay lại</string>
+
+    <!-- Music strings -->
+    <string name="recommend">Recommend</string>
+    <string name="artist">Artist</string>
+    <string name="all_songs">All Songs</string>
+    <string name="songs">Songs</string>
 </resources>
