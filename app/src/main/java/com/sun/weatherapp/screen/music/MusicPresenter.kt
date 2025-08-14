@@ -105,4 +105,4 @@ class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presen
             Artist("6", "Quân A.P", "Ca sĩ indie nổi tiếng", "https://picsum.photos/215", 27)
         )
     }
-} 
+}

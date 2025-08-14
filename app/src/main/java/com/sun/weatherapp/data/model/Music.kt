@@ -26,4 +26,4 @@ enum class MusicTabType {
     RECOMMEND,
     ARTIST,
     ALL_SONGS
-} 
+}

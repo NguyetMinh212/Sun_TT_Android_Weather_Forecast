@@ -49,4 +49,4 @@ class ArtistAdapter(
             return oldItem == newItem
         }
     }
-} 
+}

@@ -3,4 +3,4 @@
     android:shape="rectangle">
     <solid android:color="@color/image_placeholder" />
     <corners android:radius="18dp" />
-</shape> 
+</shape>

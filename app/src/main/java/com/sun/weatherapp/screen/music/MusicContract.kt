@@ -23,4 +23,4 @@ interface MusicContract : BaseContract<MusicContract.View, MusicContract.Present
         fun onSongClicked(song: Song)
         fun loadWeatherInfo()
     }
-} 
+}
