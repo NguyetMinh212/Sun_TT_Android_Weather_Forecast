@@ -1,20 +1,26 @@
 package com.sun.weatherapp.screen.music
 
 import android.graphics.Typeface
+import android.os.Handler
+import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sun.weatherapp.WeatherApplication
 import com.sun.weatherapp.data.model.Artist
 import com.sun.weatherapp.data.model.MusicTabType
 import com.sun.weatherapp.data.model.Song
+import com.sun.weatherapp.data.reposiroty.LocationRepository
+import com.sun.weatherapp.data.reposiroty.WeatherRepository
+import com.sun.weatherapp.data.reposiroty.source.local.LocationLocalDataSource
+import com.sun.weatherapp.data.reposiroty.source.local.WeatherLocalDataSource
+import com.sun.weatherapp.data.reposiroty.source.remote.WeatherRemoteDataSource
 import com.sun.weatherapp.databinding.FragmentMusicBinding
 import com.sun.weatherapp.screen.base.BaseFragment
 import com.sun.weatherapp.screen.music.adapter.ArtistAdapter
 import com.sun.weatherapp.screen.music.adapter.SongAdapter
-import android.os.Handler
-import android.os.Looper
 
 class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), MusicContract.View {
 
@@ -24,12 +30,24 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     private var currentTab = MusicTabType.RECOMMEND
     private var isInitialized = false
 
-    override fun getViewBinding(inflater: LayoutInflater, container: ViewGroup?): FragmentMusicBinding {
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentMusicBinding {
         return FragmentMusicBinding.inflate(inflater, container, false)
     }
 
     override fun initializePresenter() {
-        presenter = MusicPresenter()
+        val app = WeatherApplication.getInstance()
+        val locationRepository = LocationRepository.getInstance(
+            LocationLocalDataSource.getInstance(app.locationService)
+        )
+        val weatherRepository = WeatherRepository.getInstance(
+            WeatherRemoteDataSource.getInstance(),
+            WeatherLocalDataSource.getInstance()
+        )
+        
+        presenter = MusicPresenter(locationRepository, weatherRepository)
         presenter?.attachView(this)
     }
 
@@ -48,7 +66,6 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
             tvTabRecommend.setOnClickListener {
                 if (currentTab != MusicTabType.RECOMMEND) {
                     showLoading()
-                    clearAdapterData()
                     presenter?.onTabSelected(MusicTabType.RECOMMEND)
                 }
             }
@@ -56,7 +73,6 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
             tvTabArtist.setOnClickListener {
                 if (currentTab != MusicTabType.ARTIST) {
                     showLoading()
-                    clearAdapterData()
                     presenter?.onTabSelected(MusicTabType.ARTIST)
                 }
             }
@@ -64,7 +80,6 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
             tvTabAllSongs.setOnClickListener {
                 if (currentTab != MusicTabType.ALL_SONGS) {
                     showLoading()
-                    clearAdapterData()
                     presenter?.onTabSelected(MusicTabType.ALL_SONGS)
                 }
             }
@@ -158,11 +173,6 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
         }
     }
 
-    private fun clearAdapterData() {
-        songAdapter.submitList(emptyList())
-        artistAdapter.submitList(emptyList())
-    }
-
     override fun showSongs(songs: List<Song>) {
         songAdapter.submitList(songs)
     }
@@ -193,6 +203,25 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
         Handler(Looper.getMainLooper()).postDelayed({
             binding.progressLoading.visibility = View.GONE
         }, 100)
+    }
+
+    override fun showSkeletonLoading() {
+        binding.apply {
+            skeletonLayout.root.visibility = View.VISIBLE
+            (layoutWeatherHeader.parent as View).visibility = View.GONE
+        }
+    }
+
+    override fun hideSkeletonLoading() {
+        binding.apply {
+            skeletonLayout.root.visibility = View.GONE
+            (layoutWeatherHeader.parent as View).visibility = View.VISIBLE
+        }
+    }
+
+    override fun clearAdapterData() {
+        songAdapter.submitList(emptyList())
+        artistAdapter.submitList(emptyList())
     }
 
     override fun showError(message: String) {

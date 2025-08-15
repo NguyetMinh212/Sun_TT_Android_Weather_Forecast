@@ -1,14 +1,23 @@
 package com.sun.weatherapp.screen.music
 
+import android.location.Location
 import com.sun.weatherapp.data.model.Artist
 import com.sun.weatherapp.data.model.MusicTabType
 import com.sun.weatherapp.data.model.Song
+import com.sun.weatherapp.data.model.WeatherResponse
+import com.sun.weatherapp.data.reposiroty.LocationRepository
+import com.sun.weatherapp.data.reposiroty.WeatherRepository
+import com.sun.weatherapp.data.reposiroty.source.remote.OnResultListener
 import com.sun.weatherapp.screen.base.BasePresenter
+import com.sun.weatherapp.utils.toCelsius
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
-class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presenter {
-    
+class MusicPresenter(
+    private val locationRepository: LocationRepository,
+    private val weatherRepository: WeatherRepository
+) : BasePresenter<MusicContract.View>(), MusicContract.Presenter {
+
     private var currentTab = MusicTabType.RECOMMEND
     private var isInitialLoad = true
     
@@ -17,8 +26,11 @@ class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presen
         
         presenterScope.launch {
             try {
+                // Clear old data immediately
+                getView()?.clearAdapterData()
+                
                 if (isInitialLoad) {
-                    getView()?.showLoading()
+                    getView()?.showSkeletonLoading()
                 }
                 
                 getView()?.updateSelectedTab(tabType)
@@ -34,11 +46,19 @@ class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presen
                         getView()?.showSongs(getAllSongs())
                     }
                 }
-                
+
+                if (isInitialLoad) {
+                    getView()?.hideSkeletonLoading()
+                }
+                // Hide loading for all cases (initial load and tab switching)
                 getView()?.hideLoading()
                 isInitialLoad = false
                 
             } catch (e: Exception) {
+                if (isInitialLoad) {
+                    getView()?.hideSkeletonLoading()
+                }
+                // Hide loading even on error
                 getView()?.hideLoading()
                 getView()?.showError("Không thể tải dữ liệu nhạc: ${e.message}")
                 isInitialLoad = false
@@ -63,11 +83,39 @@ class MusicPresenter : BasePresenter<MusicContract.View>(), MusicContract.Presen
     override fun loadWeatherInfo() {
         presenterScope.launch {
             try {
-                getView()?.showWeatherInfo("Ha Noi, Viet Nam", "3°C")
+                fetchWeatherWithCurrentLocation()
             } catch (e: Exception) {
                 getView()?.showError("Không thể tải thông tin thời tiết")
             }
         }
+    }
+
+    private suspend fun fetchWeatherWithCurrentLocation() {
+        delay(500)
+        
+        locationRepository.getCurrentLocation(object : OnResultListener<Location> {
+            override fun onSuccess(location: Location) {
+                fetchWeatherDataWithLocation(location.latitude, location.longitude)
+            }
+
+            override fun onError(exception: Exception?) {
+                getView()?.showError(exception?.message ?: "Failed to get current location")
+            }
+        })
+    }
+    
+    private fun fetchWeatherDataWithLocation(latitude: Double, longitude: Double) {
+        weatherRepository.getCurrentWeather(latitude, longitude, object : OnResultListener<WeatherResponse> {
+            override fun onSuccess(data: WeatherResponse) {
+                val location = data.name
+                val temperature = "${data.main.temp.toCelsius()}°C"
+                getView()?.showWeatherInfo(location, temperature)
+            }
+
+            override fun onError(exception: Exception?) {
+                getView()?.showError(exception?.message ?: "Failed to load weather data")
+            }
+        })
     }
     
     // Mock data methods

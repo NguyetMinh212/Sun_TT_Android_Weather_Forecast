@@ -14,6 +14,9 @@ interface MusicContract : BaseContract<MusicContract.View, MusicContract.Present
         fun showWeatherInfo(location: String, temperature: String)
         fun navigateToArtistDetail(artist: Artist)
         fun navigateToSongDetail(song: Song)
+        fun showSkeletonLoading()
+        fun hideSkeletonLoading()
+        fun clearAdapterData()
     }
     
     interface Presenter : BaseContract.Presenter<View> {
