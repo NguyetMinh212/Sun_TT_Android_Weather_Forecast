@@ -1,13 +1,16 @@
 package com.sun.weatherapp.screen.music
 
 import android.graphics.Typeface
+import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.sun.weatherapp.R
 import com.sun.weatherapp.WeatherApplication
 import com.sun.weatherapp.data.model.Artist
 import com.sun.weatherapp.data.model.MusicTabType
@@ -234,7 +237,14 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     }
 
     override fun navigateToSongDetail(song: Song) {
-        // Implement navigation to song detail screen
-        Toast.makeText(requireContext(), "Navigate to ${song.title} detail", Toast.LENGTH_SHORT).show()
+        try {
+            val bundle = Bundle().apply {
+                putParcelable("song", song)
+            }
+            findNavController().navigate(R.id.playing_music_fragment, bundle)
+        } catch (e: Exception) {
+            // Fallback to Toast if navigation fails
+            Toast.makeText(requireContext(), "Playing: ${song.title} by ${song.artist}", Toast.LENGTH_SHORT).show()
+        }
     }
 }

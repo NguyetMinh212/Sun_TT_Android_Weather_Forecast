@@ -41,6 +41,7 @@
     <dimen name="dp_40">40dp</dimen>
     <dimen name="dp_56">56dp</dimen>
     <dimen name="dp_60">60dp</dimen>
+    <dimen name="dp_64">64dp</dimen>
     <dimen name="dp_76">76dp</dimen>
     <dimen name="dp_80">80dp</dimen>
     <dimen name="dp_100">100dp</dimen>
@@ -52,6 +53,7 @@
     <dimen name="dp_180">180dp</dimen>
     <dimen name="dp_190">190dp</dimen>
     <dimen name="dp_200">200dp</dimen>
+    <dimen name="dp_280">280dp</dimen>
     <dimen name="dp_400">400dp</dimen>
     
     <!-- Text sizes specific -->
@@ -102,5 +104,7 @@
     <dimen name="af_util_header_height">56dp</dimen>
     <dimen name="af_util_header_height_small">48dp</dimen>
     <dimen name="af_util_footer_height">72dp</dimen>
+
+
 
 </resources>

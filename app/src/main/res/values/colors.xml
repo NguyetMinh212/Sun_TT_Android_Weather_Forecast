@@ -70,18 +70,22 @@
     <color name="purple">#8A20D5</color>
     <color name="purple_light">#F6EDFF</color>
 
-    <!-- Music App Colors -->
+    <!-- Music Feature Colors -->
     <color name="music_background">#F5F5F7</color>
     <color name="weather_header_background">#E1D3FA</color>
-
-    <!-- Tab Colors -->
     <color name="tab_selected_background">#E0B6FF</color>
+    <color name="tab_selected_text">#FFFFFF</color>
     <color name="tab_unselected_background">#FFFFFF</color>
-
-    <!-- Item Background Colors -->
+    <color name="tab_unselected_text">#6B46C1</color>
     <color name="item_background">#EBDEFF</color>
-    <color name="item_background_pressed">#E4D6FA</color>
+    <color name="item_background_pressed">#F3E8FF</color>
+    <color name="image_placeholder">#E5E7EB</color>
+    <color name="skeleton_shimmer_item">#E0E0E0</color>
 
-    <!-- Image Placeholder -->
-    <color name="image_placeholder">#E5E5EA</color>
+    <!-- Playing Music Colors -->
+    <color name="playing_music_background">#F6EDFF</color>
+    <color name="primary_color">#6D28D9</color>
+    <color name="play_button_background">#E8D5FF</color>
+    <color name="control_button_color">#64748B</color>
+    <color name="seekbar_background">#E2E8F0</color>
 </resources>

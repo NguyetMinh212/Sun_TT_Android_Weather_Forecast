@@ -21,7 +21,17 @@
         android:id="@+id/music_fragment"
         android:name="com.sun.weatherapp.screen.music.MusicFragment"
         android:label="@string/nav_music"
-        tools:layout="@layout/fragment_music" />
+        tools:layout="@layout/fragment_music" >
+        <action
+            android:id="@+id/action_music_fragment_to_playing_music_fragment"
+            app:destination="@id/playing_music_fragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/playing_music_fragment"
+        android:name="com.sun.weatherapp.screen.playingmusic.PlayingMusicFragment"
+        android:label="Now Playing"
+        tools:layout="@layout/fragment_playing_music" />
 
     <fragment
         android:id="@+id/profile_fragment"
