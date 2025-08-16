@@ -23,45 +23,60 @@ class PlayingMusicFragment : BaseFragment<FragmentPlayingMusicBinding, PlayingMu
     override fun setupViews() {
         presenter?.attachView(this)
         
+        binding.apply {
+            seekBarProgress.progress = 0
+            tvCurrentTime.text = "0:00"
+            tvTotalDuration.text = "0:00"
+        }
+        
+        presenter?.bindService(requireContext())
+        
         // Load song from arguments
         arguments?.getParcelable<Song>("song")?.let { song ->
             presenter?.loadSong(song)
+            // Initially show playing state since song will auto-play
+            showPlayingState()
         }
+    }
+    
+    override fun onDestroyView() {
+        super.onDestroyView()
+        presenter?.unbindService(requireContext())
+        _binding = null
+    }
+    
+    override fun onPause() {
+        super.onPause()
+        presenter?.onPlayPauseClicked()
     }
     
     override fun setupListeners() {
         binding.apply {
-            // Back button
             ivBack.setOnClickListener {
+                presenter?.stopMusicAndService(requireContext())
                 findNavController().popBackStack()
             }
             
-            // Play/Pause button
             ivPlayPause.setOnClickListener {
                 presenter?.onPlayPauseClicked()
             }
             
-            // Previous button
             ivPrevious.setOnClickListener {
                 presenter?.onPreviousClicked()
             }
             
-            // Next button
             ivNext.setOnClickListener {
                 presenter?.onNextClicked()
             }
             
-            // Shuffle button
             ivShuffle.setOnClickListener {
                 presenter?.onShuffleClicked()
             }
             
-            // Repeat button
             ivRepeat.setOnClickListener {
                 presenter?.onRepeatClicked()
             }
             
-            // Seek bar
             seekBarProgress.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
                 override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                     if (fromUser) {
@@ -79,6 +94,11 @@ class PlayingMusicFragment : BaseFragment<FragmentPlayingMusicBinding, PlayingMu
         binding.apply {
             tvSongTitle.text = song.title
             tvArtistName.text = song.artist
+            
+            seekBarProgress.progress = 0
+            tvCurrentTime.text = "0:00"
+            tvTotalDuration.text = song.duration
+            
             // Load song cover image using Glide
             // Glide.with(this@PlayingMusicFragment)
             //     .load(song.imageUrl)

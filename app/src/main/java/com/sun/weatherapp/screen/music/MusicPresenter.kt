@@ -121,9 +121,9 @@ class MusicPresenter(
     // Mock data methods
     private fun getRecommendSongs(): List<Song> {
         return listOf(
-            Song("r1", "Em của ngày hôm qua", "Sơn Tùng M-TP", "https://picsum.photos/220", "3:45"),
-            Song("r2", "Lạc trôi", "Sơn Tùng M-TP", "https://picsum.photos/221", "4:12"),
-            Song("r3", "Chạy ngay đi", "Sơn Tùng M-TP", "https://picsum.photos/222", "3:28"),
+            Song("1", "Bad Guy", "Billie Eilish", "https://picsum.photos/220", "3:14"),
+            Song("2", "Blinding Lights", "The Weeknd", "https://picsum.photos/221", "3:20"),
+            Song("3", "Dance Monkey", "Tones and I", "https://picsum.photos/222", "3:29"),
             Song("r4", "Hãy trao cho anh", "Sơn Tùng M-TP", "https://picsum.photos/223", "4:01"),
             Song("r5", "Muộn rồi mà sao còn", "Sơn Tùng M-TP", "https://picsum.photos/224", "3:55"),
             Song("r6", "Nơi này có anh", "Sơn Tùng M-TP", "https://picsum.photos/225", "4:22")
@@ -132,14 +132,13 @@ class MusicPresenter(
     
     private fun getAllSongs(): List<Song> {
         return listOf(
-            Song("a1", "Ánh sao và bầu trời", "T.R.I", "https://picsum.photos/230", "3:45"),
-            Song("a2", "Bông hoa đẹp nhất", "Quân A.P", "https://picsum.photos/231", "4:12"),
-            Song("a3", "Cô đơn dành cho ai", "Lee Ken, Nal", "https://picsum.photos/232", "3:28"),
-            Song("a4", "Dễ đến dễ đi", "Quang Hùng MasterD", "https://picsum.photos/233", "4:01"),
-            Song("a5", "Em không sai chúng ta sai", "Erik", "https://picsum.photos/234", "3:55"),
-            Song("a6", "Faded", "Alan Walker", "https://picsum.photos/235", "4:22"),
-            Song("a7", "Gentlemen", "Psy", "https://picsum.photos/236", "3:30"),
-            Song("a8", "Hôm nay em cưới rồi", "Khổng Tú Quỳnh", "https://picsum.photos/237", "4:15")
+            Song("1", "Bad Guy", "Billie Eilish", "https://picsum.photos/230", "3:14"),
+            Song("2", "Blinding Lights", "The Weeknd", "https://picsum.photos/231", "3:20"),
+            Song("3", "Dance Monkey", "Tones and I", "https://picsum.photos/232", "3:29"),
+            Song("a2", "Bông hoa đẹp nhất", "Quân A.P", "https://picsum.photos/234", "4:12"),
+            Song("a3", "Có chàng trai viết lên cây", "Phan Mạnh Quỳnh", "https://picsum.photos/235", "4:05"),
+            Song("a4", "Để Mị nói cho mà nghe", "Hoàng Thùy Linh", "https://picsum.photos/236", "3:45"),
+            Song("a5", "Em gái mưa", "Hương Tràm", "https://picsum.photos/237", "4:18")
         )
     }
     

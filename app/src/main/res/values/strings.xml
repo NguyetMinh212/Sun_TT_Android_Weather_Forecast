@@ -102,4 +102,5 @@
     <string name="logout_success">Đăng xuất thành công</string>
     <string name="change_password_success">Đổi mật khẩu thành công</string>
     <string name="update_image_success">Cập nhật ảnh đại diện thành công</string>
+    <string name="now_playing">Now playing</string>
 </resources>

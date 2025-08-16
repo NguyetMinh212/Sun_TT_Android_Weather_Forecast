@@ -33,7 +33,7 @@
             android:id="@+id/tvNowPlaying"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Now playing"
+            android:text="@string/now_playing"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_18"
             android:textStyle="bold"
@@ -85,7 +85,6 @@
             android:id="@+id/tvSongTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Bad Guy"
             android:textColor="@color/black"
             android:textSize="@dimen/sp_24"
             android:textStyle="bold"
@@ -100,7 +99,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/dp_8"
-            android:text="Billie Eilish"
             android:textColor="@color/text_secondary"
             android:textSize="@dimen/sp_16"
             android:gravity="center"
@@ -129,7 +127,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:max="100"
-            android:progress="40"
+            android:progress="0"
             android:progressTint="@color/primary_color"
             android:thumbTint="@color/primary_color"
             android:progressBackgroundTint="@color/seekbar_background" />
@@ -146,10 +144,9 @@
                 android:id="@+id/tvCurrentTime"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="2:25"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/sp_14"
-                tools:text="2:25" />
+                tools:text="0:00" />
 
             <!-- Spacer -->
             <View
@@ -162,10 +159,9 @@
                 android:id="@+id/tvTotalDuration"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="4:02"
                 android:textColor="@color/text_secondary"
                 android:textSize="@dimen/sp_14"
-                tools:text="4:02" />
+                tools:text="0:00" />
 
         </LinearLayout>
 
@@ -240,3 +236,4 @@
     </LinearLayout>
 
 </androidx.constraintlayout.widget.ConstraintLayout>
+
