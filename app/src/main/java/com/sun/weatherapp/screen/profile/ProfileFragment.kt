@@ -6,7 +6,6 @@ import android.view.ViewGroup
 import android.widget.Toast
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.navigation.fragment.findNavController
-import com.bumptech.glide.Glide
 import com.google.firebase.auth.FirebaseUser
 import com.sun.weatherapp.R
 import com.sun.weatherapp.WeatherApplication
@@ -16,6 +15,7 @@ import com.sun.weatherapp.databinding.FragmentProfileBinding
 import com.sun.weatherapp.screen.base.BaseFragment
 import com.sun.weatherapp.utils.showChangePasswordDialog
 import com.sun.weatherapp.utils.showWarningDialog
+import com.sun.weatherapp.utils.ImageLoader
 
 class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfilePresenter>(), ProfileContract.View {
 
@@ -42,12 +42,8 @@ class ProfileFragment : BaseFragment<FragmentProfileBinding, ProfilePresenter>()
         user = presenter?.getProfileInfo()
 
         binding.apply {
-            Glide.with(requireContext())
-                .load(user?.photoUrl)
-                .placeholder(R.drawable.ic_profile)
-                .error(R.drawable.ic_profile)
-                .circleCrop()
-                .into(profileImage)
+            // Load profile image using ImageLoader
+            ImageLoader.loadProfileImage(user?.photoUrl?.toString(), profileImage)
 
             tvEmail.text = user?.email ?: getString(R.string.no_email)
         }

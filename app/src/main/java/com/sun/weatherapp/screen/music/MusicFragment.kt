@@ -287,8 +287,10 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     }
 
     override fun navigateToArtistDetail(artist: Artist) {
-        // Implement navigation to artist detail screen
-        Toast.makeText(requireContext(), "Navigate to ${artist.name} detail", Toast.LENGTH_SHORT).show()
+        val bundle = Bundle().apply {
+            putParcelable("artist", artist)
+        }
+        findNavController().navigate(R.id.artist_detail_fragment, bundle)
     }
 
     override fun navigateToSongDetail(song: Song) {

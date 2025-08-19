@@ -7,6 +7,7 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.sun.weatherapp.data.model.Artist
 import com.sun.weatherapp.databinding.ItemArtistBinding
+import com.sun.weatherapp.utils.ImageLoader
 
 class ArtistAdapter(
     private val onItemClick: (Artist) -> Unit
@@ -33,6 +34,10 @@ class ArtistAdapter(
             binding.apply {
                 tvArtistName.text = artist.name
                 tvArtistDescription.text = artist.description
+                
+                // Load artist image from Firebase
+                ImageLoader.loadArtistImage(artist.imageUrl, ivArtist)
+                
                 root.setOnClickListener {
                     onItemClick(artist)
                 }

@@ -103,4 +103,7 @@
     <string name="change_password_success">Đổi mật khẩu thành công</string>
     <string name="update_image_success">Cập nhật ảnh đại diện thành công</string>
     <string name="now_playing">Now playing</string>
+    <string name="no_songs_found">No songs found</string>
+    <string name="_0_songs">0 songs</string>
+    <string name="artist_name">Artist Name</string>
 </resources>

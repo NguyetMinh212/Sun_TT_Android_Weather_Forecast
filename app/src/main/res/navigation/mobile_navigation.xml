@@ -46,6 +46,9 @@
         <action
             android:id="@+id/action_music_fragment_to_playing_music_fragment"
             app:destination="@id/playing_music_fragment" />
+        <action
+            android:id="@+id/action_music_fragment_to_artist_detail_fragment"
+            app:destination="@id/artist_detail_fragment" />
     </fragment>
 
     <fragment
@@ -53,6 +56,19 @@
         android:name="com.sun.weatherapp.screen.playingmusic.PlayingMusicFragment"
         android:label="Now Playing"
         tools:layout="@layout/fragment_playing_music" />
+
+    <fragment
+        android:id="@+id/artist_detail_fragment"
+        android:name="com.sun.weatherapp.screen.artistdetail.ArtistDetailFragment"
+        android:label="Artist Detail"
+        tools:layout="@layout/fragment_artist_detail" >
+        <argument
+            android:name="artist"
+            app:argType="com.sun.weatherapp.data.model.Artist" />
+        <action
+            android:id="@+id/action_artist_detail_fragment_to_playing_music_fragment"
+            app:destination="@id/playing_music_fragment" />
+    </fragment>
 
     <fragment
         android:id="@+id/profile_fragment"

@@ -9,6 +9,7 @@ import com.sun.weatherapp.R
 import com.sun.weatherapp.data.model.Song
 import com.sun.weatherapp.databinding.FragmentPlayingMusicBinding
 import com.sun.weatherapp.screen.base.BaseFragment
+import com.sun.weatherapp.utils.ImageLoader
 
 class PlayingMusicFragment : BaseFragment<FragmentPlayingMusicBinding, PlayingMusicPresenter>(), PlayingMusicContract.View {
     
@@ -106,11 +107,8 @@ class PlayingMusicFragment : BaseFragment<FragmentPlayingMusicBinding, PlayingMu
             tvCurrentTime.text = "0:00"
             tvTotalDuration.text = song.duration
             
-            // Load song cover image using Glide
-            // Glide.with(this@PlayingMusicFragment)
-            //     .load(song.imageUrl)
-            //     .placeholder(R.drawable.bg_image_placeholder)
-            //     .into(ivSongCover)
+            // Load song cover image using Glide from Firebase
+            ImageLoader.loadSongImage(song.imageUrl, ivSongCover)
         }
     }
     
