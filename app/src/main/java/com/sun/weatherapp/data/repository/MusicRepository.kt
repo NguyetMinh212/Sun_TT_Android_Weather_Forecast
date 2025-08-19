@@ -95,4 +95,4 @@ class MusicRepository {
             // Log error but don't crash app
         }
     }
-} 
+}

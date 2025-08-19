@@ -1,4 +1,4 @@
-package com.sun.weatherapp.util
+package com.sun.weatherapp.utils
 
 import com.sun.weatherapp.data.model.Song
 
@@ -93,4 +93,4 @@ object WeatherMusicMapper {
         
         return suggestions.distinct()
     }
-} 
+}

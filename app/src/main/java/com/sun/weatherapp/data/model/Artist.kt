@@ -14,4 +14,4 @@ data class Artist(
     
     // Firebase requires empty constructor
     constructor() : this("", "", "", "", 0)
-} 
+}

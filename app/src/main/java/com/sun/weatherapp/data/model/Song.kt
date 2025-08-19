@@ -36,4 +36,4 @@ data class Song(
         const val WEATHER_FOGGY = "foggy"
         const val WEATHER_WINDY = "windy"
     }
-} 
+}

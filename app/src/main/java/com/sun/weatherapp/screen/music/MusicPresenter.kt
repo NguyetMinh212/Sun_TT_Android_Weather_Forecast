@@ -11,7 +11,7 @@ import com.sun.weatherapp.data.repository.MusicRepository
 import com.sun.weatherapp.data.reposiroty.source.remote.OnResultListener
 import com.sun.weatherapp.screen.base.BasePresenter
 import com.sun.weatherapp.utils.toCelsius
-import com.sun.weatherapp.util.WeatherMusicMapper
+import com.sun.weatherapp.utils.WeatherMusicMapper
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
