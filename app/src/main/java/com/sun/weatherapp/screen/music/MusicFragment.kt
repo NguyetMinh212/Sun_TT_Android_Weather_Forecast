@@ -27,17 +27,27 @@ import com.sun.weatherapp.screen.music.adapter.SongAdapter
 
 class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), MusicContract.View {
 
+    // Adapters
     private lateinit var songAdapter: SongAdapter
+    private lateinit var playlistAdapter: SongAdapter
     private lateinit var artistAdapter: ArtistAdapter
+    
+    // Track the exact list currently displayed on UI
+    private var currentDisplayedSongs: List<Song> = emptyList()
     
     private var currentTab = MusicTabType.RECOMMEND
     private var isInitialized = false
 
-    override fun getViewBinding(
-        inflater: LayoutInflater,
-        container: ViewGroup?
-    ): FragmentMusicBinding {
-        return FragmentMusicBinding.inflate(inflater, container, false)
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        initializePresenter()
+        setupViews()
+        setupListeners()
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
     }
 
     override fun initializePresenter() {
@@ -58,9 +68,6 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
         setupRecyclerViews()
         setupTabs()
         isInitialized = true
-        
-        // Load initial data
-        presenter?.loadWeatherInfo()
         presenter?.loadMusicData(MusicTabType.RECOMMEND)
     }
 
@@ -90,13 +97,18 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     }
 
     private fun setupRecyclerViews() {
+        // Create separate adapters để tránh conflict
+        playlistAdapter = SongAdapter { song ->
+            presenter?.onSongClicked(song)
+        }
+        
         songAdapter = SongAdapter { song ->
             presenter?.onSongClicked(song)
         }
         
         binding.rvPlaylists.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = songAdapter
+            adapter = playlistAdapter
         }
         binding.rvSongs.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -179,9 +191,41 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     override fun showSongs(songs: List<Song>) {
         songAdapter.submitList(songs)
     }
+    
+    override fun showRecommendSongs(songs: List<Song>) {
+        Handler(Looper.getMainLooper()).post {
+            if (!isAdded || view == null) return@post
+            runCatching {
+                showContentLayout(MusicTabType.RECOMMEND)
+                currentDisplayedSongs = songs
+                playlistAdapter.submitList(songs)
+                binding.rvPlaylists.visibility = View.VISIBLE
+            }.onFailure { e ->
+                android.util.Log.e("MusicFragment", "showRecommendSongs safely skipped: ${e.message}")
+            }
+        }
+    }
+    
+    override fun showAllSongs(songs: List<Song>) {
+        Handler(Looper.getMainLooper()).post {
+            if (!isAdded || view == null) return@post
+            runCatching {
+                showContentLayout(MusicTabType.ALL_SONGS)
+                currentDisplayedSongs = songs
+                songAdapter.submitList(songs)
+                binding.rvSongs.visibility = View.VISIBLE
+            }.onFailure { e ->
+                android.util.Log.e("MusicFragment", "showAllSongs safely skipped: ${e.message}")
+            }
+        }
+    }
 
     override fun showArtists(artists: List<Artist>) {
-        artistAdapter.submitList(artists)
+        Handler(Looper.getMainLooper()).post {
+            showContentLayout(MusicTabType.ARTIST)
+            artistAdapter.submitList(artists)
+            binding.rvArtists.visibility = View.VISIBLE
+        }
     }
 
     override fun updateSelectedTab(tabType: MusicTabType) {
@@ -192,9 +236,14 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     }
 
     override fun showWeatherInfo(location: String, temperature: String) {
-        binding.apply {
-            tvLocation.text = location
-            tvTemperature.text = temperature
+        Handler(Looper.getMainLooper()).post {
+            if (!isAdded || view == null) return@post
+            runCatching {
+                binding.tvLocation.text = location
+                binding.tvTemperature.text = temperature
+            }.onFailure { e ->
+                android.util.Log.e("MusicFragment", "showWeatherInfo safely skipped: ${e.message}")
+            }
         }
     }
 
@@ -203,9 +252,15 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
     }
 
     override fun hideLoading() {
-        Handler(Looper.getMainLooper()).postDelayed({
-            binding.progressLoading.visibility = View.GONE
-        }, 100)
+        Handler(Looper.getMainLooper()).post {
+            if (!isAdded || view == null) return@post
+            runCatching {
+                binding.progressLoading.visibility = View.GONE
+                // Also hide skeleton loading AND restore parent layout
+                binding.skeletonLayout.root.visibility = View.GONE
+                (binding.layoutWeatherHeader.parent as View).visibility = View.VISIBLE
+            }
+        }
     }
 
     override fun showSkeletonLoading() {
@@ -246,5 +301,30 @@ class MusicFragment : BaseFragment<FragmentMusicBinding, MusicPresenter>(), Musi
             // Fallback to Toast if navigation fails
             Toast.makeText(requireContext(), "Playing: ${song.title} by ${song.artist}", Toast.LENGTH_SHORT).show()
         }
+    }
+    
+    override fun navigateToPlayingMusic(song: Song, playlist: List<Song>) {
+        try {
+            val bundle = Bundle().apply {
+                putParcelable("song", song)
+                val toPass = if (currentDisplayedSongs.isNotEmpty()) ArrayList(currentDisplayedSongs) else ArrayList(playlist)
+                putParcelableArrayList("playlist", toPass)
+            }
+            findNavController().navigate(R.id.playing_music_fragment, bundle)
+            android.util.Log.d("MusicFragment", "Navigating with song: ${song.title}, playlist size: ${currentDisplayedSongs.size.takeIf { it>0 } ?: playlist.size}")
+        } catch (e: Exception) {
+            Toast.makeText(requireContext(), "Playing: ${song.title} by ${song.artist}", Toast.LENGTH_SHORT).show()
+        }
+    }
+    
+    override fun showMessage(message: String) {
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
+    }
+
+    override fun getViewBinding(
+        inflater: LayoutInflater,
+        container: ViewGroup?
+    ): FragmentMusicBinding {
+        return FragmentMusicBinding.inflate(inflater, container, false)
     }
 }

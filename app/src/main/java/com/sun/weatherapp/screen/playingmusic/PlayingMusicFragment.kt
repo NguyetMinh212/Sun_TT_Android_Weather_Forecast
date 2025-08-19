@@ -31,9 +31,16 @@ class PlayingMusicFragment : BaseFragment<FragmentPlayingMusicBinding, PlayingMu
         
         presenter?.bindService(requireContext())
         
-        // Load song from arguments
+        // Load song and playlist from arguments
         arguments?.getParcelable<Song>("song")?.let { song ->
-            presenter?.loadSong(song)
+            val playlist = arguments?.getParcelableArrayList<Song>("playlist") ?: emptyList()
+            android.util.Log.d("PlayingMusicFragment", "Loading song: ${song.title}, playlist size: ${playlist.size}")
+            
+            if (playlist.isNotEmpty()) {
+                presenter?.loadSongWithPlaylist(song, playlist)
+            } else {
+                presenter?.loadSong(song)
+            }
             // Initially show playing state since song will auto-play
             showPlayingState()
         }

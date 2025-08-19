@@ -39,8 +39,13 @@ class PlayingMusicPresenter : BasePresenter<PlayingMusicContract.View>(), Playin
                 }
             }
             
-            // Load pending song immediately when service is connected
+            // Load pending song and playlist immediately when service is connected
             pendingSong?.let { song ->
+                pendingPlaylist?.let { playlist ->
+                    musicPlayerService?.setPlaylist(playlist)
+                    pendingPlaylist = null
+                }
+                
                 musicPlayerService?.loadSong(song)
                 updateSongInfo(song)
                 updatePlaybackControls()
@@ -58,15 +63,36 @@ class PlayingMusicPresenter : BasePresenter<PlayingMusicContract.View>(), Playin
     }
     
     private var pendingSong: Song? = null
+    private var pendingPlaylist: List<Song>? = null
     
     override fun loadSong(song: Song) {
         if (isBound) {
             getView()?.updateProgress("0:00", song.duration, 0)
+            
+            if (musicPlayerService?.getCurrentPlaylist()?.isEmpty() != false) {
+                val playlist = listOf(song)
+                musicPlayerService?.setPlaylist(playlist)
+            }
+            
             musicPlayerService?.loadSong(song)
             updateSongInfo(song)
             updatePlaybackControls()
         } else {
             pendingSong = song
+            getView()?.updateProgress("0:00", song.duration, 0)
+        }
+    }
+    
+    fun loadSongWithPlaylist(song: Song, playlist: List<Song>) {
+        if (isBound) {
+            getView()?.updateProgress("0:00", song.duration, 0)
+            musicPlayerService?.setPlaylist(playlist)
+            musicPlayerService?.loadSong(song)
+            updateSongInfo(song)
+            updatePlaybackControls()
+        } else {
+            pendingSong = song
+            pendingPlaylist = playlist
             getView()?.updateProgress("0:00", song.duration, 0)
         }
     }
@@ -134,15 +160,13 @@ class PlayingMusicPresenter : BasePresenter<PlayingMusicContract.View>(), Playin
     
     private fun updateProgress() {
         if (isBound) {
-            val currentPosition = musicPlayerService?.getCurrentPosition() ?: 0
-            val totalDuration = musicPlayerService?.getTotalDuration() ?: 0
-            
-            if (totalDuration > 0) {
-                val currentTimeMs = (currentPosition * totalDuration / 100).toLong()
-                val currentTime = formatTime(currentTimeMs / 1000)
-                val totalTime = formatTime((totalDuration / 1000).toLong())
-                
-                getView()?.updateProgress(currentTime, totalTime, currentPosition)
+            val currentMs = musicPlayerService?.getCurrentPositionMs() ?: 0
+            val totalDurationMs = (musicPlayerService?.getTotalDuration() ?: 0)
+            if (totalDurationMs > 0) {
+                val percent = ((currentMs.toLong() * 100L) / totalDurationMs.toLong()).toInt().coerceIn(0, 100)
+                val currentTime = formatTime((currentMs / 1000).toLong())
+                val totalTime = formatTime((totalDurationMs / 1000).toLong())
+                getView()?.updateProgress(currentTime, totalTime, percent)
             }
         }
     }

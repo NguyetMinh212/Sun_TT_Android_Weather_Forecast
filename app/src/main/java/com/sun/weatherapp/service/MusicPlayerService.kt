@@ -13,6 +13,8 @@ class MusicPlayerService : Service() {
     
     private val binder = MusicPlayerBinder()
     private var mediaPlayer: MediaPlayer? = null
+    // Remove mock playlist - will get songs from Firebase
+    private var currentPlaylist: List<Song> = emptyList()
     private var currentSong: Song? = null
     private var isPlaying = false
     private var isShuffleEnabled = false
@@ -23,12 +25,6 @@ class MusicPlayerService : Service() {
     private var onServiceReadyCallback: (() -> Unit)? = null
     private var onSongChangedCallback: ((Song) -> Unit)? = null
     private var onPlaybackStateChangedCallback: ((Boolean) -> Unit)? = null
-    
-    private val mockPlaylist = listOf(
-        Song("1", "Bad Guy", "Billie Eilish", "https://example.com/badguy.jpg", "0:03"),
-        Song("2", "Blinding Lights", "The Weeknd", "https://example.com/blindinglights.jpg", "0:06"),
-        Song("3", "Dance Monkey", "Tones and I", "https://example.com/dancemonkey.jpg", "0:09")
-    )
     
     private val serviceScope = CoroutineScope(Dispatchers.Main + SupervisorJob())
     
@@ -55,12 +51,8 @@ class MusicPlayerService : Service() {
             // Auto-play when song is loaded
             mp.start()
             isPlaying = true
-            startProgressUpdate()
-            
-            // Notify UI that playback state changed to playing
             notifyPlaybackStateChanged(true)
-            
-            Log.d("MusicPlayerService", "Song prepared and started playing: duration=${mp.duration}ms")
+            startProgressUpdate()
         }
         mediaPlayer?.setOnErrorListener { _, what, extra ->
             Log.e("MusicPlayerService", "MediaPlayer error: what=$what, extra=$extra")
@@ -68,26 +60,31 @@ class MusicPlayerService : Service() {
         }
     }
     
+    fun setPlaylist(songs: List<Song>) {
+        currentPlaylist = songs
+    }
+    
     fun loadSong(song: Song) {
         currentSong = song
-        val index = mockPlaylist.indexOfFirst { it.id == song.id }
+        val index = currentPlaylist.indexOfFirst { it.id == song.id }
         currentPlaylistIndex = if (index != -1) index else 0
         
-        Log.d("MusicPlayerService", "Loading song: ${song.title}")
-        
-        // Reset progress and stop current playback immediately
+        Log.d("MusicPlayerService", "Attempting to load song: ${song.title} by ${song.artist}")
+        Log.d("MusicPlayerService", "Song index in playlist: $currentPlaylistIndex")
         isPlaying = false
         currentPosition = 0
         totalDuration = 0
         
         try {
             mediaPlayer?.reset()
-
-            val audioUrl = when (song.id) {
-                "1" -> "https://samplelib.com/lib/preview/mp3/sample-3s.mp3"
-                "2" -> "https://samplelib.com/lib/preview/mp3/sample-6s.mp3"
-                "3" -> "https://samplelib.com/lib/preview/mp3/sample-9s.mp3"
-                else -> "https://samplelib.com/lib/preview/mp3/sample-3s.mp3"
+            // Use real audio URL from Firebase (Google Drive URLs)
+            val audioUrl = if (song.audioUrl.isNotEmpty()) {
+                Log.d("MusicPlayerService", "Using Firebase audioUrl: ${song.audioUrl}")
+                song.audioUrl
+            } else {
+                Log.w("MusicPlayerService", "Empty audioUrl, using fallback for song: ${song.title}")
+                // Fallback to sample for development only
+                "https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3"
             }
             
             mediaPlayer?.setDataSource(audioUrl)
@@ -136,9 +133,14 @@ class MusicPlayerService : Service() {
     
     fun getTotalDuration(): Int = totalDuration
     
-    fun isPlaying(): Boolean = isPlaying
+    // Precise current position in milliseconds (avoids 1-3s jumps when deriving from percent)
+    fun getCurrentPositionMs(): Int = mediaPlayer?.currentPosition ?: 0
+    
+    fun getCurrentPlaylist(): List<Song> = currentPlaylist
     
     fun getCurrentSong(): Song? = currentSong
+    
+    fun isPlaying(): Boolean = isPlaying
     
     fun toggleShuffle() {
         isShuffleEnabled = !isShuffleEnabled
@@ -153,54 +155,63 @@ class MusicPlayerService : Service() {
     fun isRepeatEnabled(): Boolean = isRepeatEnabled
     
     fun nextSong() {
-        Log.d("MusicPlayerService", "Next song - current index: $currentPlaylistIndex")
+        if (currentPlaylist.isEmpty()) {
+            Log.w("MusicPlayerService", "Cannot advance - playlist is empty")
+            return
+        }
         
         // Stop current song and reset progress immediately
         isPlaying = false
         mediaPlayer?.pause()
         currentPosition = 0
-        
+
         if (isShuffleEnabled) {
-            currentPlaylistIndex = (0 until mockPlaylist.size).random()
+            currentPlaylistIndex = (0 until currentPlaylist.size).random()
         } else {
-            currentPlaylistIndex = (currentPlaylistIndex + 1) % mockPlaylist.size
+            currentPlaylistIndex = (currentPlaylistIndex + 1) % currentPlaylist.size
         }
+
+        val nextSong = currentPlaylist[currentPlaylistIndex]
         
-        Log.d("MusicPlayerService", "Moving to song index: $currentPlaylistIndex, title: ${mockPlaylist[currentPlaylistIndex].title}")
-        loadSong(mockPlaylist[currentPlaylistIndex])
+        loadSong(nextSong)
     }
     
     fun previousSong() {
-        Log.d("MusicPlayerService", "Previous song - current index: $currentPlaylistIndex")
+        if (currentPlaylist.isEmpty()) {
+            return
+        }
         
         isPlaying = false
         mediaPlayer?.pause()
         currentPosition = 0
-        
+
         if (isShuffleEnabled) {
-            currentPlaylistIndex = (0 until mockPlaylist.size).random()
+            currentPlaylistIndex = (0 until currentPlaylist.size).random()
         } else {
-            currentPlaylistIndex = if (currentPlaylistIndex > 0) currentPlaylistIndex - 1 else mockPlaylist.size - 1
+            currentPlaylistIndex = if (currentPlaylistIndex > 0) currentPlaylistIndex - 1 else currentPlaylist.size - 1
         }
-        
-        Log.d("MusicPlayerService", "Moving to song index: $currentPlaylistIndex, title: ${mockPlaylist[currentPlaylistIndex].title}")
-        loadSong(mockPlaylist[currentPlaylistIndex])
+
+        val prevSong = currentPlaylist[currentPlaylistIndex]
+        loadSong(prevSong)
     }
     
     private fun onSongCompleted() {
         Log.d("MusicPlayerService", "Song completed - isRepeatEnabled: $isRepeatEnabled")
-        
+
         isPlaying = false
         currentPosition = 0
         
-        if (isRepeatEnabled) {
+        if (isRepeatEnabled && currentSong != null) {
             // Repeat current song
             Log.d("MusicPlayerService", "Repeating current song: ${currentSong?.title}")
-            loadSong(currentSong ?: mockPlaylist[0])
-        } else {
+            loadSong(currentSong!!)
+        } else if (currentPlaylist.isNotEmpty()) {
             // Auto-advance to next song
-            Log.d("MusicPlayerService", "Auto-advancing to next song")
-            nextSong()
+            currentPlaylistIndex = (currentPlaylistIndex + 1) % currentPlaylist.size
+            val nextSong = currentPlaylist[currentPlaylistIndex]
+            loadSong(nextSong)
+        } else {
+            Log.w("MusicPlayerService", "Playlist is empty - cannot auto-advance")
         }
     }
     
