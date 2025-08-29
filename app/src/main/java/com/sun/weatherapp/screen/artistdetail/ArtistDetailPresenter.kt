@@ -6,9 +6,9 @@ import com.sun.weatherapp.data.repository.MusicRepository
 import com.sun.weatherapp.screen.base.BasePresenter
 import kotlinx.coroutines.launch
 
-class ArtistDetailPresenter : BasePresenter<ArtistDetailContract.View>(), ArtistDetailContract.Presenter {
-    
-    private val musicRepository = MusicRepository()
+class ArtistDetailPresenter(
+    private val musicRepository: MusicRepository = MusicRepository()
+) : BasePresenter<ArtistDetailContract.View>(), ArtistDetailContract.Presenter {
     private var currentArtist: Artist? = null
     private var artistSongs: List<Song> = emptyList()
     

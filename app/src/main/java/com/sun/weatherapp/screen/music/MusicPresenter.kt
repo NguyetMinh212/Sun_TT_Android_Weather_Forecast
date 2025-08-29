@@ -17,10 +17,9 @@ import kotlinx.coroutines.launch
 
 class MusicPresenter(
     private val locationRepository: LocationRepository,
-    private val weatherRepository: WeatherRepository
+    private val weatherRepository: WeatherRepository,
+    private val musicRepository: MusicRepository = MusicRepository()
 ) : BasePresenter<MusicContract.View>(), MusicContract.Presenter {
-
-    private val musicRepository = MusicRepository()
     
     private var currentTab: MusicTabType = MusicTabType.RECOMMEND
     private var currentWeatherMood: String? = null
@@ -57,7 +56,6 @@ class MusicPresenter(
                 loadAllSongsFromFirebase()
             }
             MusicTabType.ARTIST -> {
-                getView()?.showArtists(getMockArtists())
                 loadArtistsFromFirebase()
             }
         }
